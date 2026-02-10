@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Checklist de Avarias </title>
+    <title> Danos Aparente Externo </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { 
@@ -25,6 +24,7 @@
             padding: 15px; 
             border-radius: 15px; 
             box-shadow: 0 8px 30px rgba(0,0,0,0.1); 
+            line-height: 0;
         }
 
         .car-img { 
@@ -32,38 +32,48 @@
             display: block; 
             height: auto; 
             border-radius: 8px;
+            user-select: none;
         }
 
+        /* ÁREAS DE CLIQUE */
         .area {
             position: absolute;
-            width: 34px;
-            height: 34px;
             cursor: pointer;
             transform: translate(-50%, -50%);
+            z-index: 5;
+            background: rgba(255, 255, 255, 0.01); 
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
-            background: rgba(255, 255, 255, 0.95);
-            border: 2px solid #1a73e8;
-            border-radius: 50%;
-            color: #1a73e8;
-            font-size: 14px;
-            z-index: 5;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border: 1px solid transparent;
         }
 
-        .area:hover { 
-            transform: translate(-50%, -50%) scale(1.2); 
-            background: #1a73e8; 
+        /* TOOLTIP COM NOME DA PARTE */
+        .area:hover::after {
+            content: attr(data-name);
+            position: absolute;
+            white-space: nowrap;
+            background: rgba(26, 115, 232, 0.9);
             color: #fff;
+            padding: 5px 10px;
+            border-radius: 20px;
+            top: -35px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 20;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            pointer-events: none;
         }
 
+        /* ESTADO SELECIONADO (VERDE) */
         .area.marcado { 
-            background: #28a745; 
-            color: #fff; 
-            border-color: #1e7e34; 
+            border: 2px solid #28a745;
+            background: rgba(40, 167, 69, 0.2) !important;
+            color: #28a745 !important;
         }
+        
+        .area.marcado::after { display: none; }
 
         /* Menu de Opções */
         #menu-avaria {
@@ -76,123 +86,64 @@
             z-index: 100;
             width: 210px;
             border: 1px solid #ccc;
-        }
-
-        #menu-avaria strong {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            text-align: center;
-            color: #444;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
+            line-height: normal;
         }
 
         #menu-avaria button {
-            width: 100%; 
-            padding: 12px; 
-            margin: 4px 0; 
-            border: 1px solid #f0f0f0; 
-            border-radius: 8px;
-            background: #f8f9fa; 
-            cursor: pointer; 
-            text-align: left; 
-            font-size: 14px;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 500;
+            width: 100%; padding: 12px; margin: 4px 0; border: 1px solid #f0f0f0; 
+            border-radius: 8px; background: #f8f9fa; cursor: pointer; text-align: left; 
+            font-size: 14px; transition: 0.2s; display: flex; align-items: center; gap: 12px;
         }
 
-        #menu-avaria button:hover { 
-            background: #1a73e8; 
-            color: #fff; 
-        }
+        #menu-avaria button:hover { background: #1a73e8; color: #fff; }
 
         #relatorio { 
-            width: 450px; 
-            margin-top: 25px; 
-            background: #fff; 
-            padding: 20px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-            border-left: 6px solid #28a745;
+            width: 450px; margin-top: 25px; background: #fff; padding: 20px; 
+            border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 6px solid #1a73e8;
         }
 
-        .botoes-acoes {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .btn-copiar {
-            flex: 2;
-            padding: 12px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-limpar {
-            flex: 1;
-            padding: 12px;
-            background: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        #lista-danos { 
-            padding-left: 20px; 
-            font-size: 15px; 
-            margin-top: 15px;
-            line-height: 1.6;
-        }
+        .botoes-acoes { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-copiar { flex: 2; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-limpar { flex: 1; padding: 12px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        #lista-danos { padding-left: 20px; margin-top: 10px; font-size: 14px; }
     </style>
 </head>
 <body>
 
-<h3> Check-out de Danos Veiculares </h3>
+<h3> Danos Aparente Externo </h3>
 
 <div class="container">
     <img src="carro-topo.png" class="car-img" alt="Mapa do Veículo">
 
-    <div class="area" onclick="abrirMenu(event, this, 'Para-choque Dianteiro')" style="top:5%; left:50%;"><i class="fas fa-grip-lines"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Capô')" style="top:18%; left:50%;"><i class="fas fa-car"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Farol Esq')" style="top:10%; left:32%;"><i class="fas fa-bolt"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Farol Dir')" style="top:10%; left:68%;"><i class="fas fa-bolt"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Paralama Diant. Esq')" style="top:15%; left:25%;"><i class="fas fa-angle-left"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Paralama Diant. Dir')" style="top:15%; left:75%;"><i class="fas fa-angle-right"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Roda Dianteira Esq')" style="top:22%; left:20%;"><i class="fas fa-circle-notch"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Roda Dianteira Dir')" style="top:22%; left:80%;"><i class="fas fa-circle-notch"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Roda Traseira Esq')" style="top:76%; left:20%;"><i class="fas fa-circle-notch"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Roda Traseira Dir')" style="top:76%; left:80%;"><i class="fas fa-circle-notch"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Retrovisor Esq')" style="top:30%; left:18%;"><i class="fas fa-eye"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Retrovisor Dir')" style="top:30%; left:82%;"><i class="fas fa-eye"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Porta Diant. Esq')" style="top:44%; left:28%;"><i class="fas fa-columns"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Porta Diant. Dir')" style="top:44%; left:72%;"><i class="fas fa-columns"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Porta Tras. Esq')" style="top:60%; left:28%;"><i class="fas fa-columns"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Porta Tras. Dir')" style="top:60%; left:72%;"><i class="fas fa-columns"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Lateral Esq')" style="top:52%; left:15%;"><i class="fas fa-arrows-alt-v"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Lateral Dir')" style="top:52%; left:85%;"><i class="fas fa-arrows-alt-v"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Para-brisa')" style="top:32%; left:50%;"><i class="fas fa-window-maximize"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Teto')" style="top:50%; left:50%;"><i class="fas fa-square-full"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Vidro Traseiro')" style="top:71%; left:50%;"><i class="fas fa-window-maximize"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Paralama Tras. Esq')" style="top:83%; left:25%;"><i class="fas fa-angle-left"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Paralama Tras. Dir')" style="top:83%; left:75%;"><i class="fas fa-angle-right"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Lanterna Tras. Esq')" style="top:87%; left:30%;"><i class="fas fa-lightbulb"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Lanterna Tras. Dir')" style="top:87%; left:70%;"><i class="fas fa-lightbulb"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Tampa Porta-Malas')" style="top:82%; left:50%;"><i class="fas fa-toolbox"></i></div>
-    <div class="area" onclick="abrirMenu(event, this, 'Para-choque Traseiro')" style="top:92%; left:50%;"><i class="fas fa-grip-lines"></i></div>
+    <div class="area" data-name="Placa Dianteira" onclick="abrirMenu(event, this, 'Placa Dianteira')" style="top:3.07%; left:50.59%; width:66px; height:19px;"></div>
+    <div class="area" data-name="Para-choque Dianteiro" onclick="abrirMenu(event, this, 'Para-choque Dianteiro')" style="top:6.50%; left:50.59%; width:109px; height:19px;"></div>
+    <div class="area" data-name="Capô" onclick="abrirMenu(event, this, 'Capô')" style="top:14.93%; left:51.01%; width:164px; height:59px;"></div>
+    <div class="area" data-name="Farol Esq" onclick="abrirMenu(event, this, 'Farol Esq')" style="top:7.65%; left:31.46%; width:59px; height:37px;"></div>
+    <div class="area" data-name="Farol Dir" onclick="abrirMenu(event, this, 'Farol Dir')" style="top:7.94%; left:68.24%; width:53px; height:33px;"></div>
+    <div class="area" data-name="Paralama Diant. Esq" onclick="abrirMenu(event, this, 'Paralama Diant. Esq')" style="top:14.92%; left:25.37%; width:19px; height:39px;"></div>
+    <div class="area" data-name="Paralama Diant. Dir" onclick="abrirMenu(event, this, 'Paralama Diant. Dir')" style="top:15.36%; left:73.71%; width:15px; height:59px;"></div>
+    <div class="area" data-name="Roda Dianteira Esq" onclick="abrirMenu(event, this, 'Roda Dianteira Esq')" style="top:22.19%; left:25.16%; width:14px; height:54px;"></div>
+    <div class="area" data-name="Roda Dianteira Dir" onclick="abrirMenu(event, this, 'Roda Dianteira Dir')" style="top:23.34%; left:73.92%; width:19px; height:43px;"></div>
+    <div class="area" data-name="Retrovisor Esq" onclick="abrirMenu(event, this, 'Retrovisor Esq')" style="top:29.77%; left:23.90%; width:69px; height:27px;"></div>
+    <div class="area" data-name="Retrovisor Dir" onclick="abrirMenu(event, this, 'Retrovisor Dir')" style="top:29.77%; left:76.65%; width:63px; height:25px;"></div>
+    <div class="area" data-name="Para-brisa" onclick="abrirMenu(event, this, 'Para-brisa')" style="top:27.49%; left:50.59%; width:170px; height:74px;"></div>
+    <div class="area" data-name="Teto" onclick="abrirMenu(event, this, 'Teto')" style="top:49.04%; left:50.38%; width:125px; height:173px;"></div>
+    <div class="area" data-name="Porta Diant. Esq" onclick="abrirMenu(event, this, 'Porta Diant. Esq')" style="top:39.19%; left:28.31%; width:27px; height:90px;"></div>
+    <div class="area" data-name="Porta Diant. Dir" onclick="abrirMenu(event, this, 'Porta Diant. Dir')" style="top:40.19%; left:71.40%; width:33px; height:86px;"></div>
+    <div class="area" data-name="Porta Tras. Esq" onclick="abrirMenu(event, this, 'Porta Tras. Esq')" style="top:56.45%; left:28.52%; width:40px; height:128px;"></div>
+    <div class="area" data-name="Porta Tras. Dir" onclick="abrirMenu(event, this, 'Porta Tras. Dir')" style="top:56.45%; left:70.98%; width:29px; height:120px;"></div>
+    <div class="area" data-name="Lataria Lateral Esq" onclick="abrirMenu(event, this, 'Lataria Lateral Esq')" style="top:52.32%; left:17.38%; width:15px; height:260px;"></div>
+    <div class="area" data-name="Lataria Lateral Dir" onclick="abrirMenu(event, this, 'Lataria Lateral Dir')" style="top:51.46%; left:78.54%; width:15px; height:260px;"></div>
+    <div class="area" data-name="Vidro Traseiro" onclick="abrirMenu(event, this, 'Vidro Traseiro')" style="top:71.87%; left:50.17%; width:130px; height:49px;"></div>
+    <div class="area" data-name="Paralama Tras. Esq" onclick="abrirMenu(event, this, 'Paralama Tras. Esq')" style="top:69.15%; left:27.05%; width:64px; height:39px;"></div>
+    <div class="area" data-name="Paralama Tras. Dir" onclick="abrirMenu(event, this, 'Paralama Tras. Dir')" style="top:69.73%; left:72.66%; width:29px; height:38px;"></div>
+    <div class="area" data-name="Roda Traseira Esq" onclick="abrirMenu(event, this, 'Roda Traseira Esq')" style="top:76.15%; left:25.58%; width:33px; height:46px;"></div>
+    <div class="area" data-name="Roda Traseira Dir" onclick="abrirMenu(event, this, 'Roda Traseira Dir')" style="top:76.72%; left:72.87%; width:37px; height:49px;"></div>
+    <div class="area" data-name="Lanterna Tras. Esq" onclick="abrirMenu(event, this, 'Lanterna Tras. Esq')" style="top:82.85%; left:29.99%; width:69px; height:25px;"></div>
+    <div class="area" data-name="Lanterna Tras. Dir" onclick="abrirMenu(event, this, 'Lanterna Tras. Dir')" style="top:83.00%; left:67.19%; width:67px; height:19px;"></div>
+    <div class="area" data-name="Tampa Porta-Malas" onclick="abrirMenu(event, this, 'Tampa Porta-Malas')" style="top:79.71%; left:49.96%; width:138px; height:17px;"></div>
+    <div class="area" data-name="Para-choque Traseiro" onclick="abrirMenu(event, this, 'Para-choque Traseiro')" style="top:86.85%; left:49.12%; width:151px; height:13px;"></div>
+    <div class="area" data-name="Placa Traseira" onclick="abrirMenu(event, this, 'Placa Traseira')" style="top:83.99%; left:49.54%; width:70px; height:13px;"></div>
 </div>
 
 <div id="menu-avaria">
@@ -205,18 +156,11 @@
 </div>
 
 <div id="relatorio">
-    <div id="texto-relatorio">
-        <strong>Foram observados os seguintes danos externos aparentes:</strong>
-        <ul id="lista-danos"></ul>
-    </div>
-    
+    <strong>Resumo da Vistoria:</strong>
+    <ul id="lista-danos"></ul>
     <div class="botoes-acoes">
-        <button class="btn-copiar" onclick="copiarRelatorio()">
-            <i class="fas fa-copy"></i> Copiar Relatório
-        </button>
-        <button class="btn-limpar" onclick="limparTudo()">
-            Limpar
-        </button>
+        <button class="btn-copiar" onclick="copiarRelatorio()">Copiar Relatório</button>
+        <button class="btn-limpar" onclick="limparTudo()">Limpar</button>
     </div>
 </div>
 
@@ -229,57 +173,47 @@
         pecaAtiva = nomePeca;
         const menu = document.getElementById('menu-avaria');
         document.getElementById('nome-peca').innerText = nomePeca;
-        
         menu.style.display = 'block';
-        
-        let posX = e.pageX + 10;
-        let posY = e.pageY + 10;
-        
-        if (posX + 210 > window.innerWidth) posX = e.pageX - 220;
-        if (posY + 280 > window.innerHeight) posY = e.pageY - 280;
-        
-        menu.style.left = posX + 'px';
-        menu.style.top = posY + 'px';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
     }
 
     function registrarDano(tipo) {
-        elementoAtivo.innerHTML = '<i class="fas fa-check"></i>';
         elementoAtivo.classList.add('marcado');
-        
+        elementoAtivo.innerHTML = '<i class="fas fa-check"></i>';
         const lista = document.getElementById('lista-danos');
         const li = document.createElement('li');
         li.innerHTML = `<b>${pecaAtiva}:</b> ${tipo}`;
         lista.appendChild(li);
-        
         fecharMenu();
     }
 
-    function fecharMenu() {
-        document.getElementById('menu-avaria').style.display = 'none';
-    }
+    function fecharMenu() { document.getElementById('menu-avaria').style.display = 'none'; }
+    function limparTudo() { if(confirm("Deseja apagar todos os dados?")) window.location.reload(); }
 
     function copiarRelatorio() {
         const itens = document.querySelectorAll('#lista-danos li');
-        if (itens.length === 0) { alert("Nenhum registro para copiar."); return; }
+        if (itens.length === 0) {
+            alert("Nenhum dano registrado.");
+            return;
+        }
 
-        let textoFinal = "Foram observados os seguintes danos externos aparentes:\n\n";
+        let textoFinal = "Foram observados os seguintes danos aparentes: ";
+        let listaTextos = [];
+        
         itens.forEach(item => {
-            textoFinal += "• " + item.innerText + "\n";
+            listaTextos.push(item.innerText.replace(/:/g, " -"));
         });
+
+        textoFinal += listaTextos.join(", ");
 
         navigator.clipboard.writeText(textoFinal).then(() => {
-            alert("Copiado com sucesso!");
+            alert("Relatório copiado!");
         });
-    }
-
-    function limparTudo() {
-        if(confirm("Deseja limpar tudo?")) window.location.reload();
     }
 
     window.onclick = function(event) {
-        if (!event.target.closest('.area') && !event.target.closest('#menu-avaria')) {
-            fecharMenu();
-        }
+        if (!event.target.closest('.area') && !event.target.closest('#menu-avaria')) fecharMenu();
     }
 </script>
 
