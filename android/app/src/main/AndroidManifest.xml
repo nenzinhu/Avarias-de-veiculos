@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/apk/res/android"
     package="com.nenzinhu.avarias">
     <application
-        android:label="Avarias-de-veiculos"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Avariasdeveiculos"
+                android:icon="@mipmap/ic_launcher">
         
         <meta-data
             android:name="flutterEmbedding"
