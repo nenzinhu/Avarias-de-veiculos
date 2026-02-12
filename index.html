@@ -140,7 +140,7 @@
     <h2>PMRV: Registro de Avarias</h2>
 </div>
 
-<div class="top-buttons">
+<div class="top-buttons" style="z-index: 1000; position: relative;">
     <button type="button" onpointerdown="mudarVista('frente')">Frontal</button>
     <button type="button" onpointerdown="mudarVista('tras')">Traseira</button>
     <button type="button" onpointerdown="mudarVista('esquerda')">Lateral Esquerda</button>
@@ -226,29 +226,31 @@
     };
 
 function mudarVista(vista) {
-    // Impede que o navegador tente selecionar o texto ou dar zoom ao tocar
+    // Evita conflitos de toque no mobile
     if (window.event) window.event.preventDefault();
 
     vistaAtual = vista;
     
-    // 1. Troca a imagem
+    // Atualiza o caminho da imagem
     const imgElement = document.getElementById("imagemCarro");
     if (imgElement) {
         imgElement.src = vista + ".png";
     }
     
-    // 2. Destaca o botão selecionado
+    // Destaque visual do botão selecionado (Vermelho PMRV)
     document.querySelectorAll('.top-buttons button').forEach(btn => {
-        btn.style.background = "#2d3436"; // Cor padrão
-        if (btn.innerText.toLowerCase().includes(vista.replace('tras', 'traseira'))) {
-            btn.style.background = "#d63031"; // Cor ativa (Vermelho PM)
+        btn.style.background = "#2d3436"; // Cor padrão (cinza escuro)
+        // Verifica se o texto do botão combina com a vista selecionada
+        if (btn.innerText.toLowerCase().includes(vista.substring(0, 3))) {
+            btn.style.background = "#d63031"; // Ativo (vermelho)
         }
     });
 
-    // 3. Limpa e recria as áreas de toque
+    // Limpa a camada de toque anterior para não "travar" o clique
     const camada = document.getElementById("camadaInterativa");
     camada.innerHTML = "";
     
+    // Recria os pontos de toque para a nova posição
     if (mapa[vista]) {
         mapa[vista].forEach((p) => {
             const div = document.createElement("div");
@@ -256,14 +258,14 @@ function mudarVista(vista) {
             
             div.className = "area-interativa" + (pecasConcluidas[chave] ? " peca-concluida" : "");
             
-            // Posicionamento percentual absoluto
+            // Posicionamento percentual para garantir precisão no mobile
             div.style.top = (p.t / BASE_H * 100) + "%";
             div.style.left = (p.l / BASE_W * 100) + "%";
             div.style.width = (p.w / BASE_W * 100) + "%";
             div.style.height = (p.h / BASE_H * 100) + "%";
             div.style.position = "absolute";
-            div.style.zIndex = "100"; // Garante que fique por cima de tudo
 
+            // Evento de toque imediato
             div.onpointerdown = (e) => {
                 e.preventDefault();
                 pecaAlvo = p.n;
@@ -275,7 +277,6 @@ function mudarVista(vista) {
         });
     }
 }
-
     function abrirModal(nome) {
         document.getElementById("nomePeca").innerText = "Dano em: " + nome;
         document.getElementById("modalDano").style.display = "block";
