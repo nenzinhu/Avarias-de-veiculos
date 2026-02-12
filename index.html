@@ -5,133 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PMRV - Vistoria Veicular</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-            overflow-x: hidden;
-        }
-
-        .header-pmrv {
-            background: #d63031;
-            color: white;
-            padding: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-
-        .header-pmrv h2 {
-            margin: 0;
-            font-size: 18px;
-            text-transform: uppercase;
-        }
-
-        .top-buttons { 
-            background: #fff;
-            padding: 10px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 5px;
-            border-bottom: 2px solid #ddd;
-        }
-
-        .top-buttons button {
-            padding: 10px 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            background: #2d3436;
-            color: #fff;
-            font-size: 12px;
-            flex: 1 1 40%;
-        }
-
-        .btn-active { background: #d63031 !important; }
-
-        .container {
-            position: relative;
-            display: inline-block;
-            width: 95%;
-            max-width: 900px;
-            margin: 10px auto;
-            background: #fff;
-            border-radius: 8px;
-            line-height: 0; /* Remove espaços indesejados abaixo da img */
-        }
-
-        .container img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .area-interativa {
-            position: absolute;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.1); /* Visibilidade mínima para o toque */
-            z-index: 10;
-            touch-action: manipulation;
-        }
-
-        .peca-concluida {
-            border: 2px solid #27ae60 !important;
-            background: rgba(39, 174, 96, 0.3) !important;
-        }
-
-        .relatorio-box {
-            margin: 20px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 90%;
-            text-align: left;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border-left: 8px solid #d63031;
-        }
-
-        .btn-acao {
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            color: white;
-            margin-top: 10px;
-            width: 100%;
-        }
-
+        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; text-align: center; overflow-x: hidden; }
+        .header-pmrv { background: #d63031; color: white; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .header-pmrv h2 { margin: 0; font-size: 18px; text-transform: uppercase; }
+        .top-buttons { background: #fff; padding: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; border-bottom: 2px solid #ddd; position: relative; z-index: 1000; }
+        .top-buttons button { padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; background: #2d3436; color: #fff; font-size: 12px; flex: 1 1 40%; }
+        .container { position: relative; display: inline-block; width: 95%; max-width: 900px; margin: 10px auto; background: #fff; border-radius: 8px; line-height: 0; }
+        .container img { width: 100%; height: auto; display: block; }
+        .area-interativa { position: absolute; cursor: pointer; background: rgba(255, 255, 255, 0.01); z-index: 50; touch-action: manipulation; }
+        .peca-concluida { border: 2px solid #27ae60 !important; background: rgba(39, 174, 96, 0.3) !important; }
+        .relatorio-box { margin: 20px auto; background: white; padding: 20px; border-radius: 10px; width: 90%; text-align: left; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-left: 8px solid #d63031; }
+        .btn-acao { padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; margin-top: 10px; width: 100%; }
+        .btn-whatsapp { background: #25D366; }
         .btn-copy { background: #27ae60; }
         .btn-clear { background: #7f8c8d; }
-
-        #modalDano {
-            display: none;
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            z-index: 100;
-            width: 80%;
-        }
-
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 99;
-        }
-
-        .opt-dano {
-            display: block; width: 100%; padding: 15px; margin: 10px 0;
-            border: 1px solid #ddd; border-radius: 6px; cursor: pointer;
-            font-weight: bold; font-size: 16px;
-        }
+        #modalDano { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 12px; box-shadow: 0 0 30px rgba(0,0,0,0.5); z-index: 200; width: 85%; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 150; }
+        .opt-dano { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; text-align: center; background: #f9f9f9; }
     </style>
 </head>
 <body>
@@ -140,11 +30,11 @@
     <h2>PMRV: Registro de Avarias</h2>
 </div>
 
-<div class="top-buttons" style="z-index: 1000; position: relative;">
+<div class="top-buttons">
     <button type="button" onpointerdown="mudarVista('frente')">Frontal</button>
     <button type="button" onpointerdown="mudarVista('tras')">Traseira</button>
-    <button type="button" onpointerdown="mudarVista('esquerda')">Lateral Esquerda</button>
-    <button type="button" onpointerdown="mudarVista('direita')">Lateral Direita</button>
+    <button type="button" onpointerdown="mudarVista('esquerda')">Lat. Esquerda</button>
+    <button type="button" onpointerdown="mudarVista('direita')">Lat. Direita</button>
 </div>
 
 <div class="container" id="areaImagem">
@@ -155,13 +45,14 @@
 <div class="relatorio-box">
     <div style="font-weight: bold; color: #d63031; margin-bottom: 10px;">Avarias identificadas:</div>
     <ul id="listaRelatorio" style="padding-left: 20px;"></ul>
+    <button class="btn-acao btn-whatsapp" onclick="enviarWhatsApp()">Enviar via WhatsApp</button>
     <button class="btn-acao btn-copy" onclick="copiarRelatorio()">Copiar Relatório</button>
     <button class="btn-acao btn-clear" onclick="limparRelatorio()">Limpar Tudo</button>
 </div>
 
 <div class="overlay" id="overlay" onclick="fecharModal()"></div>
 <div id="modalDano">
-    <h3 id="nomePeca" style="color:#d63031; margin-top: 0;">Dano em:</h3>
+    <h3 id="nomePeca" style="color:#d63031; margin-top: 0;">Selecione o Dano</h3>
     <button class="opt-dano" onclick="addDano('Amassado')">Amassado</button>
     <button class="opt-dano" onclick="addDano('Trincado')">Trincado</button>
     <button class="opt-dano" onclick="addDano('Riscado')">Riscado</button>
@@ -174,109 +65,68 @@
     let divAlvo = null;
     let dadosRelatorio = [];
     let pecasConcluidas = {};
-
-    // Base original das imagens para cálculo de proporção
     const BASE_W = 900;
     const BASE_H = 500;
 
     const mapa = {
-         'frente': [
+        'frente': [
             {n: "Capô", t: 172, l: 253, w: 403, h: 62},
             {n: "Para-choque", t: 304, l: 205, w: 482, h: 31},
             {n: "Para-Brisa", t: 93, l: 293, w: 313, h: 78},
-            {n: "Farol Direito", t: 243, l: 213, w: 100, h: 38},
-            {n: "Farol Esquerdo", t: 240, l: 599, w: 89, h: 44},
-            {n: "Farol de Milha Dir", t: 342, l: 213, w: 78, h: 36},
-            {n: "Farol de Milha Esq", t: 344, l: 602, w: 97, h: 37},
-            {n: "Grade Superior Frontal", t: 265, l: 334, w: 236, h: 35},
-            {n: "Grade Inferior Frontal", t: 368, l: 303, w: 288, h: 34},
-            {n: "Retrovisor Dir", t: 138, l: 162, w: 79, h: 52},
-            {n: "Retrovisor Esq", t: 139, l: 657, w: 87, h: 50}
+            {n: "Farol Dir", t: 243, l: 213, w: 100, h: 38},
+            {n: "Farol Esq", t: 240, l: 599, w: 89, h: 44}
         ],
         'tras': [
-            {n: "Lanterna Traseira Esq", t: 271, l: 238, w: 106, h: 34},
-            {n: "Lanterna Traseira Dir", t: 271, l: 532, w: 116, h: 36},
-            {n: "Vidro Traseiro - Vigia", t: 172, l: 304, w: 270, h: 63},
+            {n: "Lanterna Esq", t: 271, l: 238, w: 106, h: 34},
+            {n: "Lanterna Dir", t: 271, l: 532, w: 116, h: 36},
             {n: "Tampa Porta-Malas", t: 318, l: 319, w: 246, h: 48},
-            {n: "Para-Choque Traseiro", t: 367, l: 248, w: 388, h: 49},
-            {n: "Escapamento", t: 446, l: 250, w: 111, h: 42},
-            {n: "Refletor Esq", t: 415, l: 257, w: 96, h: 15},
-            {n: "Refletor Dir", t: 419, l: 551, w: 86, h: 27},
-            {n: "Emblema", t: 244, l: 411, w: 49, h: 30},
-            {n: "Placa Traseira", t: 274, l: 368, w: 148, h: 42}
+            {n: "Para-Choque Tras", t: 367, l: 248, w: 388, h: 49}
         ],
         'direita': [
-            {n: "Roda Dianteira Direita", t: 281, l: 138, w: 71, h: 80},
-            {n: "Roda Traseira Direita", t: 296, l: 596, w: 111, h: 76},
-            {n: "Porta Dianteira Direita", t: 234, l: 376, w: 178, h: 113},
-            {n: "Porta Traseira Direita", t: 224, l: 260, w: 113, h: 106},
-            {n: "Vidro Dianteiro Direita", t: 167, l: 369, w: 104, h: 58},
-            {n: "Vidro Traseiro Direita", t: 170, l: 207, w: 148, h: 39},
-            {n: "Para-Lama Dianteiro Direita", t: 275, l: 723, w: 41, h: 100}
+            {n: "Porta Dianteira Dir", t: 234, l: 376, w: 178, h: 113},
+            {n: "Porta Traseira Dir", t: 224, l: 260, w: 113, h: 106}
         ],
         'esquerda': [
-            {n: "Roda Dianteira Esq", t: 283, l: 154, w: 111, h: 87},
-            {n: "Roda Traseira Esq", t: 286, l: 636, w: 111, h: 76},
             {n: "Porta Dianteira Esq", t: 229, l: 295, w: 178, h: 113},
-            {n: "Porta Traseira Esq", t: 219, l: 485, w: 113, h: 106},
-            {n: "Vidro Dianteiro Esq", t: 162, l: 373, w: 104, h: 58},
-            {n: "Vidro Traseiro Esq", t: 156, l: 502, w: 152, h: 60},
-            {n: "Para-Lama Dianteiro Esq", t: 259, l: 97, w: 41, h: 100}
+            {n: "Porta Traseira Esq", t: 219, l: 485, w: 113, h: 106}
         ]
     };
 
-function mudarVista(vista) {
-    // Evita conflitos de toque no mobile
-    if (window.event) window.event.preventDefault();
-
-    vistaAtual = vista;
-    
-    // Atualiza o caminho da imagem
-    const imgElement = document.getElementById("imagemCarro");
-    if (imgElement) {
-        imgElement.src = vista + ".png";
-    }
-    
-    // Destaque visual do botão selecionado (Vermelho PMRV)
-    document.querySelectorAll('.top-buttons button').forEach(btn => {
-        btn.style.background = "#2d3436"; // Cor padrão (cinza escuro)
-        // Verifica se o texto do botão combina com a vista selecionada
-        if (btn.innerText.toLowerCase().includes(vista.substring(0, 3))) {
-            btn.style.background = "#d63031"; // Ativo (vermelho)
-        }
-    });
-
-    // Limpa a camada de toque anterior para não "travar" o clique
-    const camada = document.getElementById("camadaInterativa");
-    camada.innerHTML = "";
-    
-    // Recria os pontos de toque para a nova posição
-    if (mapa[vista]) {
-        mapa[vista].forEach((p) => {
-            const div = document.createElement("div");
-            const chave = `${vistaAtual}-${p.n}`;
-            
-            div.className = "area-interativa" + (pecasConcluidas[chave] ? " peca-concluida" : "");
-            
-            // Posicionamento percentual para garantir precisão no mobile
-            div.style.top = (p.t / BASE_H * 100) + "%";
-            div.style.left = (p.l / BASE_W * 100) + "%";
-            div.style.width = (p.w / BASE_W * 100) + "%";
-            div.style.height = (p.h / BASE_H * 100) + "%";
-            div.style.position = "absolute";
-
-            // Evento de toque imediato
-            div.onpointerdown = (e) => {
-                e.preventDefault();
-                pecaAlvo = p.n;
-                divAlvo = div;
-                abrirModal(p.n);
-            };
-
-            camada.appendChild(div);
+    function mudarVista(vista) {
+        vistaAtual = vista;
+        document.getElementById("imagemCarro").src = vista + ".png";
+        
+        document.querySelectorAll('.top-buttons button').forEach(btn => {
+            btn.style.background = "#2d3436";
+            if (btn.innerText.toLowerCase().includes(vista.substring(0, 3))) {
+                btn.style.background = "#d63031";
+            }
         });
+
+        const camada = document.getElementById("camadaInterativa");
+        camada.innerHTML = "";
+        
+        if (mapa[vista]) {
+            mapa[vista].forEach((p) => {
+                const div = document.createElement("div");
+                const chave = `${vistaAtual}-${p.n}`;
+                div.className = "area-interativa" + (pecasConcluidas[chave] ? " peca-concluida" : "");
+                div.style.top = (p.t / BASE_H * 100) + "%";
+                div.style.left = (p.l / BASE_W * 100) + "%";
+                div.style.width = (p.w / BASE_W * 100) + "%";
+                div.style.height = (p.h / BASE_H * 100) + "%";
+
+                div.onpointerdown = (e) => {
+                    e.preventDefault();
+                    pecaAlvo = p.n;
+                    divAlvo = div;
+                    abrirModal(p.n);
+                };
+                camada.appendChild(div);
+            });
+        }
     }
-}
+
     function abrirModal(nome) {
         document.getElementById("nomePeca").innerText = "Dano em: " + nome;
         document.getElementById("modalDano").style.display = "block";
@@ -291,55 +141,49 @@ function mudarVista(vista) {
     function addDano(tipo) {
         dadosRelatorio.push(`- ${pecaAlvo}: ${tipo}`);
         pecasConcluidas[`${vistaAtual}-${pecaAlvo}`] = true;
-        
         if (divAlvo) divAlvo.classList.add("peca-concluida");
-
-        const lista = document.getElementById("listaRelatorio");
-        lista.innerHTML = "";
-        dadosRelatorio.forEach(d => {
-            const li = document.createElement("li"); li.innerText = d; lista.appendChild(li);
-        });
+        atualizarRelatorio();
         fecharModal();
     }
 
+    function atualizarRelatorio() {
+        const lista = document.getElementById("listaRelatorio");
+        lista.innerHTML = "";
+        dadosRelatorio.forEach(d => {
+            const li = document.createElement("li");
+            li.innerText = d;
+            lista.appendChild(li);
+        });
+    }
+
+    function copiarRelatorio() {
+        if(dadosRelatorio.length === 0) return alert("Nenhum dano registrado.");
+        const texto = "PMRV - AVARIAS APARENTES:\n" + dadosRelatorio.join("\n");
+        const tempInput = document.createElement("textarea");
+        tempInput.value = texto;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        alert("Copiado!");
+    }
+
+    function enviarWhatsApp() {
+        if(dadosRelatorio.length === 0) return alert("Nenhum dano registrado.");
+        const msg = encodeURIComponent("*PMRV - AVARIAS*\n" + dadosRelatorio.join("\n"));
+        window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+    }
+
     function limparRelatorio() {
-        if(confirm("Apagar todos os registros?")) {
+        if(confirm("Apagar tudo?")) {
             dadosRelatorio = [];
             pecasConcluidas = {};
-            document.getElementById("listaRelatorio").innerHTML = "";
+            atualizarRelatorio();
             mudarVista(vistaAtual);
         }
     }
 
-    function copiarRelatorio() {
-    if(dadosRelatorio.length === 0) return alert("Nenhum dano registrado.");
-    
-    const texto = "PMRV - AVARIAS APARENTES:\n" + dadosRelatorio.join("\n");
-
-    // Método compatível com APK (WebView)
-    const tempInput = document.createElement("textarea");
-    tempInput.value = texto;
-    document.body.appendChild(tempInput);
-    tempInput.select();
-    tempInput.setSelectionRange(0, 99999); // Suporte para mobile
-    
-    try {
-        document.execCommand("copy");
-        alert("Copiado com sucesso!");
-    } catch (err) {
-        alert("Erro ao copiar.");
-    }
-
-    document.body.removeChild(tempInput);
-}
-
-function enviarWhatsApp() {
-    if(dadosRelatorio.length === 0) return alert("Nenhum dano registrado.");
-    
-    const titulo = "*PMRV - RELATÓRIO DE AVARIAS APARENTES*\n";
-    const corpo = dadosRelatorio.join("\n");
-    const msg = encodeURIComponent(titulo + corpo);
-    
-    // Abre o WhatsApp com a mensagem pronta
-    window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
-}
+    window.onload = () => mudarVista('frente');
+</script>
+</body>
+</html>
