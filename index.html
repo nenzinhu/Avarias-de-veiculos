@@ -141,10 +141,10 @@
 </div>
 
 <div class="top-buttons">
-    <button type="button" id="btn-frente" onpointerdown="mudarVista('frente')">Frontal</button>
-    <button type="button" id="btn-tras" onpointerdown="mudarVista('tras')">Traseira</button>
-    <button type="button" id="btn-esquerda" onpointerdown="mudarVista('esquerda')">Lateral Esquerda</button>
-    <button type="button" id="btn-direita" onpointerdown="mudarVista('direita')">Lateral Direita</button>
+    <button type="button" onpointerdown="mudarVista('frente')">Frontal</button>
+    <button type="button" onpointerdown="mudarVista('tras')">Traseira</button>
+    <button type="button" onpointerdown="mudarVista('esquerda')">Lateral Esquerda</button>
+    <button type="button" onpointerdown="mudarVista('direita')">Lateral Direita</button>
 </div>
 
 <div class="container" id="areaImagem">
@@ -225,40 +225,56 @@
         ]
     };
 
-    function mudarVista(vista) {
-        vistaAtual = vista;
-        document.getElementById("imagemCarro").src = vista + ".png";
-        
-        document.querySelectorAll('.top-buttons button').forEach(b => b.classList.remove('btn-active'));
-        document.getElementById('btn-' + vista).classList.add('btn-active');
+function mudarVista(vista) {
+    // Impede que o navegador tente selecionar o texto ou dar zoom ao tocar
+    if (window.event) window.event.preventDefault();
 
-        const camada = document.getElementById("camadaInterativa");
-        camada.innerHTML = "";
-        
+    vistaAtual = vista;
+    
+    // 1. Troca a imagem
+    const imgElement = document.getElementById("imagemCarro");
+    if (imgElement) {
+        imgElement.src = vista + ".png";
+    }
+    
+    // 2. Destaca o botão selecionado
+    document.querySelectorAll('.top-buttons button').forEach(btn => {
+        btn.style.background = "#2d3436"; // Cor padrão
+        if (btn.innerText.toLowerCase().includes(vista.replace('tras', 'traseira'))) {
+            btn.style.background = "#d63031"; // Cor ativa (Vermelho PM)
+        }
+    });
+
+    // 3. Limpa e recria as áreas de toque
+    const camada = document.getElementById("camadaInterativa");
+    camada.innerHTML = "";
+    
+    if (mapa[vista]) {
         mapa[vista].forEach((p) => {
             const div = document.createElement("div");
             const chave = `${vistaAtual}-${p.n}`;
-            const jaConcluido = pecasConcluidas[chave];
-
-            div.className = "area-interativa" + (jaConcluido ? " peca-concluida" : "");
             
-            // CONVERSÃO PARA PORCENTAGEM (Torna o clique preciso em qualquer tela)
+            div.className = "area-interativa" + (pecasConcluidas[chave] ? " peca-concluida" : "");
+            
+            // Posicionamento percentual absoluto
             div.style.top = (p.t / BASE_H * 100) + "%";
             div.style.left = (p.l / BASE_W * 100) + "%";
             div.style.width = (p.w / BASE_W * 100) + "%";
             div.style.height = (p.h / BASE_H * 100) + "%";
+            div.style.position = "absolute";
+            div.style.zIndex = "100"; // Garante que fique por cima de tudo
 
-            // Evento para Mobile
-            div.addEventListener('pointerdown', (e) => {
+            div.onpointerdown = (e) => {
                 e.preventDefault();
                 pecaAlvo = p.n;
                 divAlvo = div;
                 abrirModal(p.n);
-            });
+            };
 
             camada.appendChild(div);
         });
     }
+}
 
     function abrirModal(nome) {
         document.getElementById("nomePeca").innerText = "Dano em: " + nome;
