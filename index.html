@@ -294,14 +294,35 @@
         }
     }
 
-    function copiarRelatorio() {
-        if(dadosRelatorio.length === 0) return alert("Nenhum dano registrado.");
-        const texto = "PMRV - AVARIAS APARENTES:\n" + dadosRelatorio.join("\n");
-        navigator.clipboard.writeText(texto);
-        alert("Relatório copiado!");
+    ffunction copiarRelatorio() {
+    if(dadosRelatorio.length === 0) return alert("Nenhum dano registrado.");
+    
+    const texto = "PMRV - AVARIAS APARENTES:\n" + dadosRelatorio.join("\n");
+
+    // Método compatível com APK (WebView)
+    const tempInput = document.createElement("textarea");
+    tempInput.value = texto;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    tempInput.setSelectionRange(0, 99999); // Suporte para mobile
+    
+    try {
+        document.execCommand("copy");
+        alert("Copiado com sucesso!");
+    } catch (err) {
+        alert("Erro ao copiar.");
     }
 
-    window.onload = () => mudarVista('frente');
-</script>
-</body>
-</html>
+    document.body.removeChild(tempInput);
+}
+
+function enviarWhatsApp() {
+    if(dadosRelatorio.length === 0) return alert("Nenhum dano registrado.");
+    
+    const titulo = "*PMRV - RELATÓRIO DE AVARIAS APARENTES*\n";
+    const corpo = dadosRelatorio.join("\n");
+    const msg = encodeURIComponent(titulo + corpo);
+    
+    // Abre o WhatsApp com a mensagem pronta
+    window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+}
