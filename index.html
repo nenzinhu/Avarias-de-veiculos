@@ -21,9 +21,10 @@ background:var(--cinza);
 .header{
 background:var(--vermelho);
 color:white;
-padding:16px;
+padding:14px;
 text-align:center;
 font-weight:600;
+font-size:16px;
 }
 
 .abas{
@@ -35,12 +36,13 @@ background:white;
 
 .abas button{
 flex:1;
-padding:10px;
+padding:8px;
 border:none;
 border-radius:20px;
 background:#ddd;
 font-weight:600;
 cursor:pointer;
+font-size:13px;
 }
 
 .abas button.ativo{
@@ -50,11 +52,13 @@ color:white;
 
 .container{
 position:relative;
-margin:15px;
+margin:10px auto;
 background:white;
 border-radius:12px;
 overflow:hidden;
 box-shadow:0 4px 10px rgba(0,0,0,0.1);
+max-width:900px;
+width:95%;
 }
 
 .container img{
@@ -64,18 +68,24 @@ display:block;
 
 .numero-wrapper{
 position:absolute;
+transform:translate(-50%, -50%);
 }
 
 .numero-marker{
-width:32px;
-height:32px;
+width:5vw;
+height:5vw;
+min-width:24px;
+min-height:24px;
+max-width:36px;
+max-height:36px;
 background:var(--vermelho);
 color:white;
 border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:14px;
+font-size:2.5vw;
+min-font-size:12px;
 font-weight:bold;
 cursor:pointer;
 transition:0.2s;
@@ -86,11 +96,13 @@ background:var(--verde);
 }
 
 .relatorio{
-margin:15px;
+margin:15px auto;
 background:white;
 padding:15px;
 border-radius:12px;
 box-shadow:0 4px 10px rgba(0,0,0,0.1);
+max-width:900px;
+width:95%;
 }
 
 .relatorio button{
@@ -102,6 +114,7 @@ border-radius:8px;
 font-weight:bold;
 cursor:pointer;
 color:white;
+font-size:14px;
 }
 
 .btn-copy{background:var(--verde);}
@@ -118,13 +131,14 @@ background:rgba(0,0,0,0.6);
 display:none;
 align-items:center;
 justify-content:center;
+z-index:999;
 }
 
 .modal-box{
 background:white;
 padding:20px;
 border-radius:12px;
-width:250px;
+width:260px;
 text-align:center;
 }
 
@@ -176,7 +190,6 @@ Foram observadas as seguintes avarias externas no veículo:
 <button class="btn-clear" onclick="limparRelatorio()">Limpar Relatório</button>
 </div>
 
-<!-- MODAL -->
 <div id="modalAvaria" class="modal">
   <div class="modal-box">
     <h4>Tipo de Avaria</h4>
@@ -194,8 +207,8 @@ let vistaAtual='frente';
 let relatorio=[];
 let pecaSelecionada=null;
 
-const BASE_W=900;
-const BASE_H=500;
+let BASE_W=900;
+let BASE_H=500;
 
 const mapa = {
 
@@ -251,12 +264,19 @@ const mapa = {
 
 };
 
+/* ========================== */
+
 function mudarVista(v){
 vistaAtual=v;
 document.getElementById("imagemCarro").src=v+".png";
 document.querySelectorAll(".abas button").forEach(b=>b.classList.remove("ativo"));
 document.getElementById("btn-"+v).classList.add("ativo");
+
+document.getElementById("imagemCarro").onload = ()=>{
+BASE_W = imagemCarro.naturalWidth;
+BASE_H = imagemCarro.naturalHeight;
 gerarNumeros();
+};
 }
 
 function gerarNumeros(){
@@ -268,6 +288,7 @@ mapa[vistaAtual].forEach((p,i)=>{
 
 const wrapper=document.createElement("div");
 wrapper.className="numero-wrapper";
+
 wrapper.style.top=(p.t/BASE_H*100)+"%";
 wrapper.style.left=(p.l/BASE_W*100)+"%";
 
@@ -287,7 +308,6 @@ document.getElementById("modalAvaria").style.display="flex";
 }
 
 function selecionarAvaria(tipo){
-
 pecaSelecionada.elemento.classList.add("vistoriado");
 pecaSelecionada.elemento.innerText="✔";
 
