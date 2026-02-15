@@ -259,58 +259,57 @@ let pecaSelecionada=null;
 
 const mapa = {
 
-  "frente": [
-    {"n":"Capô","t":193,"l":438},
-    {"n":"Para-choque","t":246,"l":436},
-    {"n":"Para-Brisa","t":123,"l":440},
-    {"n":"Farol Direito","t":254,"l":232},
-    {"n":"Farol Esquerdo","t":261,"l":642},
-    {"n":"Farol de Milha Direito","t":356,"l":236},
-    {"n":"Farol de Milha Esquerdo","t":355,"l":646},
-    {"n":"Grade Superior Frontal","t":296,"l":435},
-    {"n":"Grade Inferior Frontal","t":394,"l":436},
-    {"n":"Retrovisor Direito","t":155,"l":199},
-    {"n":"Retrovisor Esquerdo","t":159,"l":675},
-    {"n":"Para-lama Dianteiro Esquerdo","t":275,"l":189},
-    {"n":"Para-lama Dianteiro Direito","t":294,"l":685},
-    {"n":"Placa Dianteira","t":364,"l":436}
+  frente: [
+    { n: "Capô", t: 193, l: 438 },
+    { n: "Para-choque", t: 246, l: 436 },
+    { n: "Para-Brisa", t: 123, l: 440 },
+    { n: "Farol Direito", t: 254, l: 232 },
+    { n: "Farol Esquerdo", t: 261, l: 642 },
+    { n: "Farol de Milha Direito", t: 356, l: 236 },
+    { n: "Farol de Milha Esquerdo", t: 355, l: 646 },
+    { n: "Grade Superior Frontal", t: 296, l: 435 },
+    { n: "Grade Inferior Frontal", t: 394, l: 436 },
+    { n: "Retrovisor Direito", t: 155, l: 199 },
+    { n: "Retrovisor Esquerdo", t: 159, l: 675 },
+    { n: "Para-lama Dianteiro Esquerdo", t: 275, l: 189 },
+    { n: "Para-lama Dianteiro Direito", t: 294, l: 685 },
+    { n: "Placa Dianteira", t: 364, l: 436 }
   ],
 
-  "tras": [
-    {"n":"Lanterna Traseira Esquerda","t":265,"l":282},
-    {"n":"Lanterna Traseira Direita","t":263,"l":585},
-    {"n":"Vidro Traseiro - Vigia","t":184,"l":425},
-    {"n":"Tampa Porta-Malas","t":322,"l":438},
-    {"n":"Para-choque Traseiro","t":359,"l":428},
-    {"n":"Escapamento","t":423,"l":300},
-    {"n":"Refletor Esquerdo","t":398,"l":276},
-    {"n":"Refletor Direito","t":398,"l":578},
-    {"n":"Emblema","t":249,"l":434},
-    {"n":"Placa Traseira","t":281,"l":431}
+  tras: [
+    { n: "Lanterna Traseira Esquerda", t: 265, l: 282 },
+    { n: "Lanterna Traseira Direita", t: 263, l: 585 },
+    { n: "Vidro Traseiro - Vigia", t: 184, l: 433 },
+    { n: "Tampa Porta-Malas", t: 322, l: 434 },
+    { n: "Para-choque Traseiro", t: 359, l: 434 },
+    { n: "Escapamento", t: 423, l: 295 },
+    { n: "Refletor Esquerdo", t: 398, l: 276 },
+    { n: "Refletor Direito", t: 398, l: 578 },
+    { n: "Emblema", t: 249, l: 434 },
+    { n: "Placa Traseira", t: 281, l: 431 }
   ],
 
-  "direita": [
-    {"n":"Roda Dianteira Direita","t":349,"l":164},
-    {"n":"Roda Traseira Direita","t":353,"l":644},
-    {"n":"Porta Dianteira Direita","t":291,"l":426},
-    {"n":"Porta Traseira Direita","t":294,"l":272},
-    {"n":"Vidro Dianteiro Direito","t":198,"l":415},
-    {"n":"Vidro Traseiro Direito","t":195,"l":281},
-    {"n":"Para-lama Dianteiro Direito","t":316,"l":714}
+  direita: [
+    { n: "Roda Dianteira Direita", t: 349, l: 164 },
+    { n: "Roda Traseira Direita", t: 353, l: 644 },
+    { n: "Porta Dianteira Direita", t: 291, l: 426 },
+    { n: "Porta Traseira Direita", t: 294, l: 272 },
+    { n: "Vidro Dianteiro Direito", t: 198, l: 415 },
+    { n: "Vidro Traseiro Direito", t: 195, l: 281 },
+    { n: "Para-lama Dianteiro Direito", t: 316, l: 714 }
   ],
 
-  "esquerda": [
-    {"n":"Roda Dianteira Esquerda","t":397,"l":193},
-    {"n":"Roda Traseira Esquerda","t":393,"l":687},
-    {"n":"Porta Dianteira Esquerda","t":333,"l":382},
-    {"n":"Porta Traseira Esquerda","t":334,"l":549},
-    {"n":"Vidro Dianteiro Esquerdo","t":227,"l":410},
-    {"n":"Vidro Traseiro Esquerdo","t":214,"l":552},
-    {"n":"Para-lama Dianteiro Esquerdo","t":382,"l":113}
+  esquerda: [
+    { n: "Roda Dianteira Esquerda", t: 397, l: 193 },
+    { n: "Roda Traseira Esquerda", t: 393, l: 687 },
+    { n: "Porta Dianteira Esquerda", t: 333, l: 382 },
+    { n: "Porta Traseira Esquerda", t: 334, l: 549 },
+    { n: "Vidro Dianteiro Esquerdo", t: 227, l: 410 },
+    { n: "Vidro Traseiro Esquerdo", t: 214, l: 552 },
+    { n: "Para-lama Dianteiro Esquerdo", t: 382, l: 113 }
   ]
 
 };
-
 
 
 function mudarVista(v){
