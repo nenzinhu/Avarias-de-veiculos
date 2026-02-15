@@ -1,212 +1,354 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PMRV - Vistoria Veicular</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; text-align: center; overflow-x: hidden; }
-        .header-pmrv { background: #d63031; color: white; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .header-pmrv h2 { margin: 0; font-size: 18px; text-transform: uppercase; }
-        .top-buttons { background: #fff; padding: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; border-bottom: 2px solid #ddd; position: relative; z-index: 1000; }
-        .top-buttons button { padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; background: #2d3436; color: #fff; font-size: 12px; flex: 1 1 40%; }
-        .container { position: relative; display: inline-block; width: 95%; max-width: 900px; margin: 10px auto; background: #fff; border-radius: 8px; line-height: 0; }
-        .container img { width: 100%; height: auto; display: block; }
-        .area-interativa { position: absolute; cursor: pointer; background: rgba(255, 255, 255, 0.01); z-index: 50; touch-action: manipulation; }
-        .peca-concluida { border: 2px solid #27ae60 !important; background: rgba(39, 174, 96, 0.3) !important; }
-        .relatorio-box { margin: 20px auto; background: white; padding: 20px; border-radius: 10px; width: 90%; text-align: left; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-left: 8px solid #d63031; }
-        .btn-acao { padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; margin-top: 10px; width: 100%; }
-        .btn-whatsapp { background: #25D366; }
-        .btn-copy { background: #27ae60; }
-        .btn-clear { background: #7f8c8d; }
-        #modalDano { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 12px; box-shadow: 0 0 30px rgba(0,0,0,0.5); z-index: 200; width: 85%; }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 150; }
-        .opt-dano { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; text-align: center; background: #f9f9f9; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMRV - Relatório de Avarias</title>
+
+<style>
+:root{
+--vermelho:#b71c1c;
+--cinza:#f2f2f2;
+--verde:#2e7d32;
+}
+
+body{
+margin:0;
+font-family:Segoe UI, Arial;
+background:var(--cinza);
+}
+
+.header{
+background:var(--vermelho);
+color:white;
+padding:16px;
+text-align:center;
+font-weight:600;
+}
+
+.abas{
+display:flex;
+gap:6px;
+padding:10px;
+background:white;
+}
+
+.abas button{
+flex:1;
+padding:10px;
+border:none;
+border-radius:20px;
+background:#ddd;
+font-weight:600;
+cursor:pointer;
+}
+
+.abas button.ativo{
+background:var(--vermelho);
+color:white;
+}
+
+.container{
+position:relative;
+margin:15px;
+background:white;
+border-radius:12px;
+overflow:hidden;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.container img{
+width:100%;
+display:block;
+}
+
+.numero-wrapper{
+position:absolute;
+}
+
+.numero-marker{
+width:32px;
+height:32px;
+background:var(--vermelho);
+color:white;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:14px;
+font-weight:bold;
+cursor:pointer;
+transition:0.2s;
+}
+
+.numero-marker.vistoriado{
+background:var(--verde);
+}
+
+.relatorio{
+margin:15px;
+background:white;
+padding:15px;
+border-radius:12px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.relatorio button{
+width:100%;
+margin-top:8px;
+padding:10px;
+border:none;
+border-radius:8px;
+font-weight:bold;
+cursor:pointer;
+color:white;
+}
+
+.btn-copy{background:var(--verde);}
+.btn-clear{background:#777;}
+.btn-whats{background:#25D366;}
+
+.modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+display:none;
+align-items:center;
+justify-content:center;
+}
+
+.modal-box{
+background:white;
+padding:20px;
+border-radius:12px;
+width:250px;
+text-align:center;
+}
+
+.modal-box button{
+width:100%;
+margin:6px 0;
+padding:10px;
+border:none;
+border-radius:8px;
+background:var(--vermelho);
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+.modal-box .cancelar{
+background:#777;
+}
+</style>
 </head>
+
 <body>
 
-<div class="header-pmrv">
-    <h2>PMRV: Registro de Avarias</h2>
+<div class="header">PMRV - Relatório de Avarias</div>
+
+<div class="abas">
+<button onclick="mudarVista('frente')" id="btn-frente" class="ativo">Frente</button>
+<button onclick="mudarVista('tras')" id="btn-tras">Traseira</button>
+<button onclick="mudarVista('direita')" id="btn-direita">Direita</button>
+<button onclick="mudarVista('esquerda')" id="btn-esquerda">Esquerda</button>
 </div>
 
-<div class="top-buttons">
-    <button type="button" onpointerdown="mudarVista('frente')">Frontal</button>
-    <button type="button" onpointerdown="mudarVista('tras')">Traseira</button>
-    <button type="button" onpointerdown="mudarVista('esquerda')">Lat. Esquerda</button>
-    <button type="button" onpointerdown="mudarVista('direita')">Lat. Direita</button>
+<div class="container">
+<img id="imagemCarro" src="frente.png">
+<div id="camadaInterativa"></div>
 </div>
 
-<div class="container" id="areaImagem">
-    <img id="imagemCarro" src="frente.png">
-    <div id="camadaInterativa"></div>
+<div class="relatorio">
+<h3>Relatório de Avarias</h3>
+
+<p id="introducaoRelatorio" style="display:none; font-weight:500;">
+Foram observadas as seguintes avarias externas no veículo:
+</p>
+
+<ul id="listaAvarias"></ul>
+
+<button class="btn-copy" onclick="copiarRelatorio()">Copiar Relatório</button>
+<button class="btn-whats" onclick="enviarWhatsApp()">Compartilhar via WhatsApp</button>
+<button class="btn-clear" onclick="limparRelatorio()">Limpar Relatório</button>
 </div>
 
-<div class="relatorio-box">
-    <div style="font-weight: bold; color: #d63031; margin-bottom: 10px;">Avarias identificadas:</div>
-    <ul id="listaRelatorio" style="padding-left: 20px;"></ul>
-    <button class="btn-acao btn-whatsapp" onclick="enviarWhatsApp()">Enviar via WhatsApp</button>
-    <button class="btn-acao btn-copy" onclick="copiarRelatorio()">Copiar Relatório</button>
-    <button class="btn-acao btn-clear" onclick="limparRelatorio()">Limpar Tudo</button>
-</div>
-
-<div class="overlay" id="overlay" onclick="fecharModal()"></div>
-<div id="modalDano">
-    <h3 id="nomePeca" style="color:#d63031; margin-top: 0;">Selecione o Dano</h3>
-    <button class="opt-dano" onclick="addDano('Amassado')">Amassado</button>
-    <button class="opt-dano" onclick="addDano('Trincado')">Trincado</button>
-    <button class="opt-dano" onclick="addDano('Riscado')">Riscado</button>
-    <button class="opt-dano" onclick="addDano('Quebrado')">Quebrado</button>
+<!-- MODAL -->
+<div id="modalAvaria" class="modal">
+  <div class="modal-box">
+    <h4>Tipo de Avaria</h4>
+    <button onclick="selecionarAvaria('Amassado')">Amassado</button>
+    <button onclick="selecionarAvaria('Arranhão')">Arranhão</button>
+    <button onclick="selecionarAvaria('Quebrado')">Quebrado</button>
+    <button onclick="selecionarAvaria('Trincado')">Trincado</button>
+    <button class="cancelar" onclick="fecharModal()">Cancelar</button>
+  </div>
 </div>
 
 <script>
-    let vistaAtual = 'frente';
-    let pecaAlvo = "";
-    let divAlvo = null;
-    let dadosRelatorio = [];
-    let pecasConcluidas = {};
-    const BASE_W = 900;
-    const BASE_H = 500;
 
-     const mapa = {
-         'frente': [
-            {n: "Capô", t: 172, l: 253, w: 403, h: 62},
-            {n: "Para-choque", t: 304, l: 205, w: 482, h: 31},
-            {n: "Para-Brisa", t: 93, l: 293, w: 313, h: 78},
-            {n: "Farol Direito", t: 243, l: 213, w: 100, h: 38},
-            {n: "Farol Esquerdo", t: 240, l: 599, w: 89, h: 44},
-            {n: "Farol de Milha Dir", t: 342, l: 213, w: 78, h: 36},
-            {n: "Farol de Milha Esq", t: 344, l: 602, w: 97, h: 37},
-            {n: "Grade Superior Frontal", t: 265, l: 334, w: 236, h: 35},
-            {n: "Grade Inferior Frontal", t: 368, l: 303, w: 288, h: 34},
-            {n: "Retrovisor Dir", t: 138, l: 162, w: 79, h: 52},
-            {n: "Retrovisor Esq", t: 139, l: 657, w: 87, h: 50}
-        ],
-        'tras': [
-            {n: "Lanterna Traseira Esq", t: 271, l: 238, w: 106, h: 34},
-            {n: "Lanterna Traseira Dir", t: 271, l: 532, w: 116, h: 36},
-            {n: "Vidro Traseiro - Vigia", t: 172, l: 304, w: 270, h: 63},
-            {n: "Tampa Porta-Malas", t: 318, l: 319, w: 246, h: 48},
-            {n: "Para-Choque Traseiro", t: 367, l: 248, w: 388, h: 49},
-            {n: "Escapamento", t: 446, l: 250, w: 111, h: 42},
-            {n: "Refletor Esq", t: 415, l: 257, w: 96, h: 15},
-            {n: "Refletor Dir", t: 419, l: 551, w: 86, h: 27},
-            {n: "Emblema", t: 244, l: 411, w: 49, h: 30},
-            {n: "Placa Traseira", t: 274, l: 368, w: 148, h: 42}
-        ],
-        'direita': [
-            {n: "Roda Dianteira Direita", t: 281, l: 138, w: 71, h: 80},
-            {n: "Roda Traseira Direita", t: 296, l: 596, w: 111, h: 76},
-            {n: "Porta Dianteira Direita", t: 234, l: 376, w: 178, h: 113},
-            {n: "Porta Traseira Direita", t: 224, l: 260, w: 113, h: 106},
-            {n: "Vidro Dianteiro Direita", t: 167, l: 369, w: 104, h: 58},
-            {n: "Vidro Traseiro Direita", t: 170, l: 207, w: 148, h: 39},
-            {n: "Para-Lama Dianteiro Direita", t: 275, l: 723, w: 41, h: 100}
-        ],
-        'esquerda': [
-            {n: "Roda Dianteira Esq", t: 283, l: 154, w: 111, h: 87},
-            {n: "Roda Traseira Esq", t: 286, l: 636, w: 111, h: 76},
-            {n: "Porta Dianteira Esq", t: 229, l: 295, w: 178, h: 113},
-            {n: "Porta Traseira Esq", t: 219, l: 485, w: 113, h: 106},
-            {n: "Vidro Dianteiro Esq", t: 162, l: 373, w: 104, h: 58},
-            {n: "Vidro Traseiro Esq", t: 156, l: 502, w: 152, h: 60},
-            {n: "Para-Lama Dianteiro Esq", t: 259, l: 97, w: 41, h: 100}
-        ]
-    };
+let vistaAtual='frente';
+let relatorio=[];
+let pecaSelecionada=null;
 
+const BASE_W=900;
+const BASE_H=500;
 
-    function mudarVista(vista) {
-        vistaAtual = vista;
-        document.getElementById("imagemCarro").src = vista + ".png";
-        
-        document.querySelectorAll('.top-buttons button').forEach(btn => {
-            btn.style.background = "#2d3436";
-            if (btn.innerText.toLowerCase().includes(vista.substring(0, 3))) {
-                btn.style.background = "#d63031";
-            }
-        });
+const mapa = {
 
-        const camada = document.getElementById("camadaInterativa");
-        camada.innerHTML = "";
-        
-        if (mapa[vista]) {
-            mapa[vista].forEach((p) => {
-                const div = document.createElement("div");
-                const chave = `${vistaAtual}-${p.n}`;
-                div.className = "area-interativa" + (pecasConcluidas[chave] ? " peca-concluida" : "");
-                div.style.top = (p.t / BASE_H * 100) + "%";
-                div.style.left = (p.l / BASE_W * 100) + "%";
-                div.style.width = (p.w / BASE_W * 100) + "%";
-                div.style.height = (p.h / BASE_H * 100) + "%";
+  "frente": [
+    {"n":"Capô","t":193,"l":438},
+    {"n":"Para-choque","t":246,"l":436},
+    {"n":"Para-Brisa","t":123,"l":440},
+    {"n":"Farol Direito","t":254,"l":232},
+    {"n":"Farol Esquerdo","t":261,"l":642},
+    {"n":"Farol de Milha Direito","t":356,"l":236},
+    {"n":"Farol de Milha Esquerdo","t":355,"l":646},
+    {"n":"Grade Superior Frontal","t":296,"l":435},
+    {"n":"Grade Inferior Frontal","t":394,"l":436},
+    {"n":"Retrovisor Direito","t":155,"l":199},
+    {"n":"Retrovisor Esquerdo","t":159,"l":675},
+    {"n":"Para-lama Dianteiro Esquerdo","t":275,"l":189},
+    {"n":"Para-lama Dianteiro Direito","t":294,"l":685},
+    {"n":"Placa Dianteira","t":364,"l":436}
+  ],
 
-                div.onpointerdown = (e) => {
-                    e.preventDefault();
-                    pecaAlvo = p.n;
-                    divAlvo = div;
-                    abrirModal(p.n);
-                };
-                camada.appendChild(div);
-            });
-        }
-    }
+  "tras": [
+    {"n":"Lanterna Traseira Esquerda","t":265,"l":282},
+    {"n":"Lanterna Traseira Direita","t":263,"l":585},
+    {"n":"Vidro Traseiro - Vigia","t":184,"l":433},
+    {"n":"Tampa Porta-Malas","t":322,"l":434},
+    {"n":"Para-choque Traseiro","t":359,"l":434},
+    {"n":"Escapamento","t":423,"l":295},
+    {"n":"Refletor Esquerdo","t":398,"l":276},
+    {"n":"Refletor Direito","t":398,"l":578},
+    {"n":"Emblema","t":249,"l":434},
+    {"n":"Placa Traseira","t":281,"l":431}
+  ],
 
-    function abrirModal(nome) {
-        document.getElementById("nomePeca").innerText = "Dano em: " + nome;
-        document.getElementById("modalDano").style.display = "block";
-        document.getElementById("overlay").style.display = "block";
-    }
+  "direita": [
+    {"n":"Roda Dianteira Direita","t":349,"l":164},
+    {"n":"Roda Traseira Direita","t":353,"l":644},
+    {"n":"Porta Dianteira Direita","t":291,"l":426},
+    {"n":"Porta Traseira Direita","t":294,"l":272},
+    {"n":"Vidro Dianteiro Direito","t":198,"l":415},
+    {"n":"Vidro Traseiro Direito","t":195,"l":281},
+    {"n":"Para-lama Dianteiro Direito","t":316,"l":714}
+  ],
 
-    function fecharModal() {
-        document.getElementById("modalDano").style.display = "none";
-        document.getElementById("overlay").style.display = "none";
-    }
+  "esquerda": [
+    {"n":"Roda Dianteira Esquerda","t":397,"l":193},
+    {"n":"Roda Traseira Esquerda","t":393,"l":687},
+    {"n":"Porta Dianteira Esquerda","t":333,"l":382},
+    {"n":"Porta Traseira Esquerda","t":334,"l":549},
+    {"n":"Vidro Dianteiro Esquerdo","t":227,"l":410},
+    {"n":"Vidro Traseiro Esquerdo","t":214,"l":552},
+    {"n":"Para-lama Dianteiro Esquerdo","t":382,"l":113}
+  ]
 
-    function addDano(tipo) {
-        dadosRelatorio.push(`- ${pecaAlvo}: ${tipo}`);
-        pecasConcluidas[`${vistaAtual}-${pecaAlvo}`] = true;
-        if (divAlvo) divAlvo.classList.add("peca-concluida");
-        atualizarRelatorio();
-        fecharModal();
-    }
+};
 
-    function atualizarRelatorio() {
-        const lista = document.getElementById("listaRelatorio");
-        lista.innerHTML = "";
-        dadosRelatorio.forEach(d => {
-            const li = document.createElement("li");
-            li.innerText = d;
-            lista.appendChild(li);
-        });
-    }
+function mudarVista(v){
+vistaAtual=v;
+document.getElementById("imagemCarro").src=v+".png";
+document.querySelectorAll(".abas button").forEach(b=>b.classList.remove("ativo"));
+document.getElementById("btn-"+v).classList.add("ativo");
+gerarNumeros();
+}
 
-    function copiarRelatorio() {
-        if(dadosRelatorio.length === 0) return alert("Nenhum dano registrado.");
-        const texto = "PMRV - AVARIAS APARENTES:\n" + dadosRelatorio.join("\n");
-        const tempInput = document.createElement("textarea");
-        tempInput.value = texto;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        document.execCommand("copy");
-        document.body.removeChild(tempInput);
-        alert("Copiado!");
-    }
+function gerarNumeros(){
+const camada=document.getElementById("camadaInterativa");
+camada.innerHTML="";
+if(!mapa[vistaAtual]) return;
 
-    function enviarWhatsApp() {
-        if(dadosRelatorio.length === 0) return alert("Nenhum dano registrado.");
-        const msg = encodeURIComponent("*PMRV - AVARIAS*\n" + dadosRelatorio.join("\n"));
-        window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
-    }
+mapa[vistaAtual].forEach((p,i)=>{
 
-    function limparRelatorio() {
-        if(confirm("Apagar tudo?")) {
-            dadosRelatorio = [];
-            pecasConcluidas = {};
-            atualizarRelatorio();
-            mudarVista(vistaAtual);
-        }
-    }
+const wrapper=document.createElement("div");
+wrapper.className="numero-wrapper";
+wrapper.style.top=(p.t/BASE_H*100)+"%";
+wrapper.style.left=(p.l/BASE_W*100)+"%";
 
-    window.onload = () => mudarVista('frente');
+const marker=document.createElement("div");
+marker.className="numero-marker";
+marker.innerText=i+1;
+
+wrapper.appendChild(marker);
+camada.appendChild(wrapper);
+
+marker.onclick=()=>{
+pecaSelecionada={nome:p.n, elemento:marker};
+document.getElementById("modalAvaria").style.display="flex";
+};
+
+});
+}
+
+function selecionarAvaria(tipo){
+
+pecaSelecionada.elemento.classList.add("vistoriado");
+pecaSelecionada.elemento.innerText="✔";
+
+relatorio.push(pecaSelecionada.nome + " - " + tipo);
+
+atualizarRelatorio();
+fecharModal();
+}
+
+function fecharModal(){
+document.getElementById("modalAvaria").style.display="none";
+}
+
+function atualizarRelatorio(){
+const lista=document.getElementById("listaAvarias");
+const intro=document.getElementById("introducaoRelatorio");
+
+lista.innerHTML="";
+
+if(relatorio.length === 0){
+intro.style.display="none";
+return;
+}
+
+intro.style.display="block";
+
+relatorio.forEach(r=>{
+let li=document.createElement("li");
+li.textContent=r;
+lista.appendChild(li);
+});
+}
+
+function copiarRelatorio(){
+if(relatorio.length===0) return alert("Nenhuma avaria registrada.");
+let texto="PMRV - RELATÓRIO DE AVARIAS\n\n";
+texto+="Foram observadas as seguintes avarias externas no veículo:\n\n";
+relatorio.forEach(r=>texto+="- "+r+"\n");
+navigator.clipboard.writeText(texto);
+alert("Relatório copiado!");
+}
+
+function enviarWhatsApp(){
+if(relatorio.length===0) return alert("Nenhuma avaria registrada.");
+let texto="PMRV - RELATÓRIO DE AVARIAS\n\n";
+texto+="Foram observadas as seguintes avarias externas no veículo:\n\n";
+relatorio.forEach(r=>texto+="- "+r+"\n");
+window.open("https://api.whatsapp.com/send?text="+encodeURIComponent(texto));
+}
+
+function limparRelatorio(){
+relatorio=[];
+document.querySelectorAll(".numero-marker").forEach(m=>{
+m.classList.remove("vistoriado");
+});
+atualizarRelatorio();
+}
+
+window.onload=()=>mudarVista('frente');
+
 </script>
 </body>
 </html>
+
