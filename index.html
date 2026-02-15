@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -268,17 +269,19 @@ const mapa = {
 
 function mudarVista(v){
 vistaAtual=v;
-document.getElementById("imagemCarro").src=v+".png";
+
+const img = document.getElementById("imagemCarro");
+img.src = v + ".png";
+
 document.querySelectorAll(".abas button").forEach(b=>b.classList.remove("ativo"));
 document.getElementById("btn-"+v).classList.add("ativo");
 
-document.getElementById("imagemCarro").onload = ()=>{
-BASE_W = imagemCarro.naturalWidth;
-BASE_H = imagemCarro.naturalHeight;
+img.onload = function(){
+BASE_W = img.naturalWidth;
+BASE_H = img.naturalHeight;
 gerarNumeros();
 };
 }
-
 function gerarNumeros(){
 const camada=document.getElementById("camadaInterativa");
 camada.innerHTML="";
@@ -289,8 +292,12 @@ mapa[vistaAtual].forEach((p,i)=>{
 const wrapper=document.createElement("div");
 wrapper.className="numero-wrapper";
 
-wrapper.style.top=(p.t/BASE_H*100)+"%";
-wrapper.style.left=(p.l/BASE_W*100)+"%";
+/* Converte pixel original para porcentagem fixa */
+let topPercent = (p.t / 500) * 100;
+let leftPercent = (p.l / 900) * 100;
+
+wrapper.style.top = topPercent + "%";
+wrapper.style.left = leftPercent + "%";
 
 const marker=document.createElement("div");
 marker.className="numero-marker";
@@ -306,7 +313,6 @@ document.getElementById("modalAvaria").style.display="flex";
 
 });
 }
-
 function selecionarAvaria(tipo){
 pecaSelecionada.elemento.classList.add("vistoriado");
 pecaSelecionada.elemento.innerText="✔";
@@ -371,4 +377,3 @@ window.onload=()=>mudarVista('frente');
 </script>
 </body>
 </html>
-
