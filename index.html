@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -19,6 +18,8 @@ font-family:Segoe UI, Arial;
 background:var(--cinza);
 }
 
+/* ================= HEADER ================= */
+
 .header{
 background:var(--vermelho);
 color:white;
@@ -27,6 +28,8 @@ text-align:center;
 font-weight:600;
 font-size:16px;
 }
+
+/* ================= ABAS ================= */
 
 .abas{
 display:flex;
@@ -51,9 +54,21 @@ background:var(--vermelho);
 color:white;
 }
 
+/* ================= LAYOUT ================= */
+
+.layout{
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+justify-content:center;
+max-width:1200px;
+margin:auto;
+}
+
+/* ================= IMAGEM ================= */
+
 .container{
 position:relative;
-margin:10px auto;
 background:white;
 border-radius:12px;
 overflow:hidden;
@@ -73,20 +88,15 @@ transform:translate(-50%, -50%);
 }
 
 .numero-marker{
-width:5vw;
-height:5vw;
-min-width:24px;
-min-height:24px;
-max-width:36px;
-max-height:36px;
+width:32px;
+height:32px;
 background:var(--vermelho);
 color:white;
 border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:2.5vw;
-min-font-size:12px;
+font-size:14px;
 font-weight:bold;
 cursor:pointer;
 transition:0.2s;
@@ -95,6 +105,33 @@ transition:0.2s;
 .numero-marker.vistoriado{
 background:var(--verde);
 }
+
+/* ================= LEGENDA ================= */
+
+.legenda{
+background:white;
+padding:15px;
+border-radius:12px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+max-width:280px;
+width:95%;
+font-size:14px;
+}
+
+.legenda h4{
+margin-top:0;
+}
+
+.legenda li{
+margin-bottom:6px;
+}
+
+.legenda li.ativo{
+color:var(--verde);
+font-weight:bold;
+}
+
+/* ================= RELATÓRIO ================= */
 
 .relatorio{
 margin:15px auto;
@@ -121,6 +158,8 @@ font-size:14px;
 .btn-copy{background:var(--verde);}
 .btn-clear{background:#777;}
 .btn-whats{background:#25D366;}
+
+/* ================= MODAL ================= */
 
 .modal{
 position:fixed;
@@ -172,9 +211,18 @@ background:#777;
 <button onclick="mudarVista('esquerda')" id="btn-esquerda">Esquerda</button>
 </div>
 
+<div class="layout">
+
 <div class="container">
 <img id="imagemCarro" src="frente.png">
 <div id="camadaInterativa"></div>
+</div>
+
+<div class="legenda">
+<h4>Legenda da Vista</h4>
+<ul id="listaLegenda"></ul>
+</div>
+
 </div>
 
 <div class="relatorio">
@@ -191,6 +239,7 @@ Foram observadas as seguintes avarias externas no veículo:
 <button class="btn-clear" onclick="limparRelatorio()">Limpar Relatório</button>
 </div>
 
+<!-- MODAL -->
 <div id="modalAvaria" class="modal">
   <div class="modal-box">
     <h4>Tipo de Avaria</h4>
@@ -207,9 +256,6 @@ Foram observadas as seguintes avarias externas no veículo:
 let vistaAtual='frente';
 let relatorio=[];
 let pecaSelecionada=null;
-
-let BASE_W=900;
-let BASE_H=500;
 
 const mapa = {
 
@@ -265,26 +311,28 @@ const mapa = {
 
 };
 
-/* ========================== */
+
 
 function mudarVista(v){
 vistaAtual=v;
 
-const img = document.getElementById("imagemCarro");
-img.src = v + ".png";
+const img=document.getElementById("imagemCarro");
+img.src=v+".png";
 
 document.querySelectorAll(".abas button").forEach(b=>b.classList.remove("ativo"));
 document.getElementById("btn-"+v).classList.add("ativo");
 
-img.onload = function(){
-BASE_W = img.naturalWidth;
-BASE_H = img.naturalHeight;
-gerarNumeros();
-};
+img.onload=gerarNumeros;
 }
+
 function gerarNumeros(){
+
 const camada=document.getElementById("camadaInterativa");
+const listaLegenda=document.getElementById("listaLegenda");
+
 camada.innerHTML="";
+listaLegenda.innerHTML="";
+
 if(!mapa[vistaAtual]) return;
 
 mapa[vistaAtual].forEach((p,i)=>{
@@ -292,12 +340,8 @@ mapa[vistaAtual].forEach((p,i)=>{
 const wrapper=document.createElement("div");
 wrapper.className="numero-wrapper";
 
-/* Converte pixel original para porcentagem fixa */
-let topPercent = (p.t / 500) * 100;
-let leftPercent = (p.l / 900) * 100;
-
-wrapper.style.top = topPercent + "%";
-wrapper.style.left = leftPercent + "%";
+wrapper.style.top=(p.t/500*100)+"%";
+wrapper.style.left=(p.l/900*100)+"%";
 
 const marker=document.createElement("div");
 marker.className="numero-marker";
@@ -306,18 +350,35 @@ marker.innerText=i+1;
 wrapper.appendChild(marker);
 camada.appendChild(wrapper);
 
+let li=document.createElement("li");
+li.id="leg-"+i;
+li.innerText=(i+1)+" - "+p.n;
+listaLegenda.appendChild(li);
+
 marker.onclick=()=>{
-pecaSelecionada={nome:p.n, elemento:marker};
+pecaSelecionada={
+nome:p.n,
+elemento:marker,
+indice:i
+};
 document.getElementById("modalAvaria").style.display="flex";
 };
 
 });
 }
+
 function selecionarAvaria(tipo){
+
 pecaSelecionada.elemento.classList.add("vistoriado");
 pecaSelecionada.elemento.innerText="✔";
 
-relatorio.push(pecaSelecionada.nome + " - " + tipo);
+relatorio.push(pecaSelecionada.nome+" - "+tipo);
+
+let item=document.getElementById("leg-"+pecaSelecionada.indice);
+if(item){
+item.classList.add("ativo");
+item.innerText="✔ "+item.innerText;
+}
 
 atualizarRelatorio();
 fecharModal();
@@ -333,7 +394,7 @@ const intro=document.getElementById("introducaoRelatorio");
 
 lista.innerHTML="";
 
-if(relatorio.length === 0){
+if(relatorio.length===0){
 intro.style.display="none";
 return;
 }
@@ -369,6 +430,7 @@ relatorio=[];
 document.querySelectorAll(".numero-marker").forEach(m=>{
 m.classList.remove("vistoriado");
 });
+gerarNumeros();
 atualizarRelatorio();
 }
 
