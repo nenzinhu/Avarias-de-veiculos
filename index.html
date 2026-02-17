@@ -106,27 +106,41 @@ transition:0.2s;
 background:var(--verde);
 }
 
-/* ================= LEGENDA ================= */
+/* ================= LEGENDA 2 COLUNAS ================= */
 
 .legenda{
 background:white;
 padding:15px;
 border-radius:12px;
 box-shadow:0 4px 10px rgba(0,0,0,0.1);
-max-width:280px;
+max-width:400px;
 width:95%;
 font-size:14px;
 }
 
 .legenda h4{
 margin-top:0;
+margin-bottom:10px;
 }
 
-.legenda li{
+.legenda-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:5px 20px;
+}
+
+.legenda-grid ul{
+list-style:none;
+padding:0;
+margin:0;
+}
+
+.legenda-grid li{
 margin-bottom:6px;
+font-size:13px;
 }
 
-.legenda li.ativo{
+.legenda-grid li.ativo{
 color:var(--verde);
 font-weight:bold;
 }
@@ -220,7 +234,10 @@ background:#777;
 
 <div class="legenda">
 <h4>Legenda da Vista</h4>
-<ul id="listaLegenda"></ul>
+<div class="legenda-grid">
+<ul id="coluna1"></ul>
+<ul id="coluna2"></ul>
+</div>
 </div>
 
 </div>
@@ -239,7 +256,6 @@ Foram observadas as seguintes avarias externas no veículo:
 <button class="btn-clear" onclick="limparRelatorio()">Limpar Relatório</button>
 </div>
 
-<!-- MODAL -->
 <div id="modalAvaria" class="modal">
   <div class="modal-box">
     <h4>Tipo de Avaria</h4>
@@ -316,23 +332,21 @@ const mapa = {
 
 function mudarVista(v){
 vistaAtual=v;
-
-const img=document.getElementById("imagemCarro");
-img.src=v+".png";
-
+document.getElementById("imagemCarro").src=v+".png";
 document.querySelectorAll(".abas button").forEach(b=>b.classList.remove("ativo"));
 document.getElementById("btn-"+v).classList.add("ativo");
-
-img.onload=gerarNumeros;
+gerarNumeros();
 }
 
 function gerarNumeros(){
 
 const camada=document.getElementById("camadaInterativa");
-const listaLegenda=document.getElementById("listaLegenda");
+const coluna1=document.getElementById("coluna1");
+const coluna2=document.getElementById("coluna2");
 
 camada.innerHTML="";
-listaLegenda.innerHTML="";
+coluna1.innerHTML="";
+coluna2.innerHTML="";
 
 if(!mapa[vistaAtual]) return;
 
@@ -340,7 +354,6 @@ mapa[vistaAtual].forEach((p,i)=>{
 
 const wrapper=document.createElement("div");
 wrapper.className="numero-wrapper";
-
 wrapper.style.top=(p.t/500*100)+"%";
 wrapper.style.left=(p.l/900*100)+"%";
 
@@ -354,7 +367,12 @@ camada.appendChild(wrapper);
 let li=document.createElement("li");
 li.id="leg-"+i;
 li.innerText=(i+1)+" - "+p.n;
-listaLegenda.appendChild(li);
+
+if(i<7){
+coluna1.appendChild(li);
+}else{
+coluna2.appendChild(li);
+}
 
 marker.onclick=()=>{
 pecaSelecionada={
